@@ -8,6 +8,8 @@ public class Team
 {
     public int AtheleteID { get; set; }
     public String InjuryName { get; set; }
+    public String LeagueName { get; set; }
+    public int InjuredPlayerCount { get; set; } 
     public Team() { }
 
 
@@ -15,5 +17,7 @@ public class Team
     {
         TeamID = TeamID;
         TeamName = TeamName;
+        LeagueName = LeagueName;
+        InjuredPlayerCount = InjuredPlayerCount;
     }
 }
