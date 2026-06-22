@@ -15,7 +15,15 @@ namespace ProInjuryLogs.Model;
     public Injuries(int InjuryId, String Injuryname)
     {
         InjuryID = InjuryID;
+        AthleteID = AthleteID;
+        InjuryType = InjuryType;
+        StartDate = StartDate;
+        RecoveryDate = RecoveryDate;
+
+
+
         InjuryName = InjuryName;
+
     }
 }
 
