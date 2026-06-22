@@ -7,6 +7,11 @@ public class Sports
 {
     public int AtheleteID { get; set; }
     public String InjuryName { get; set; }
+    public String LeagueName { get; set; }
+ public int TeamsCount { get; set; }
+    public int AthletesCounnt { get; set; }
+    public int managerCount { get; set; }
+
     public Sports() { }
 
 
@@ -14,5 +19,10 @@ public class Sports
     {
         SportID = SportID;
         SportName = SportName;
+        LeagueName = LeagueName;
+        TeamsCount = TeamsCount;
+        AthletesCounnt = AthletesCounnt;    
+        managerCount = managerCount;
+
     }
 }
