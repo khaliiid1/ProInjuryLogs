@@ -40,3 +40,14 @@ namespace InjuryLogs.controller
             {
                 Console.WriteLine($"Error connecting to database: {ex.Message}");  // if there is an error this is the message that will be displayed.
             }
+
+        }
+        
+        public void CloseConnection()
+        {
+            if (conn != null && conn.State == System.Data.ConnectionState.Open)
+            {
+                conn.Close();
+                Console.WriteLine("Connection Closed");
+            }
+        }
