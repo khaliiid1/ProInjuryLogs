@@ -1,4 +1,5 @@
-﻿using ProInjuryLogs.Model;
+﻿using Microsoft.Data.SqlClient;
+using ProInjuryLogs.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,9 +53,9 @@ namespace InjuryLogs.controller
                 Console.WriteLine("Connection Closed");
             }
         }
-        public List<InjuryLogs> GetAllInjury()
+        public List<Injuries> GetAllInjury()
         {
-            List<Injury> InjuryList = new List<Injury>();
+            List<Injuries> InjuryList = new List<Injuries>();
             string query = "SELECT * FROM Injury";
             try
             {
@@ -64,7 +65,7 @@ namespace InjuryLogs.controller
                     {
                         while (reader.Read())
                         {
-                            Injuries Injury = new Injury
+                            Injuries Injury = new Injuries
                             {
                                 InjuryID = reader.GetInt32(0),
                                 InjuryName = reader.GetString(1)
@@ -109,4 +110,3 @@ namespace InjuryLogs.controller
 
     }
     }
-}
