@@ -98,6 +98,14 @@ namespace InjuryLogs.controller
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+        public int DeleteBrandByName(string InjuryName)
+        {
+            using (SqlCommand cmd = new SqlCommand("DELETE FROM production.Brands WHERE BRAND_NAME = @BrandName", conn))
+            {
+                cmd.Parameters.AddWithValue("@InuryName", InjuryName);
+                return cmd.ExecuteNonQuery();
+            }
+        }
 
     }
     }
