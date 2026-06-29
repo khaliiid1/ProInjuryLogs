@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProInjuryLogs.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InjuryLogs.controller
 {
-    Public class StorageManager
+    public class StorageManager
 
     {
         private SqlConnection conn;
@@ -42,7 +43,7 @@ namespace InjuryLogs.controller
             }
 
         }
-        
+
         public void CloseConnection()
         {
             if (conn != null && conn.State == System.Data.ConnectionState.Open)
@@ -51,3 +52,53 @@ namespace InjuryLogs.controller
                 Console.WriteLine("Connection Closed");
             }
         }
+        public List<InjuryLogs> GetAllInjury()
+        {
+            List<Injury> InjuryList = new List<Injury>();
+            string query = "SELECT * FROM Injury";
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Injuries Injury = new Injury
+                            {
+                                InjuryID = reader.GetInt32(0),
+                                InjuryName = reader.GetString(1)
+                            };
+                            InjuryList.Add(Injury);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving injuries: {ex.Message}");
+            }
+            return InjuryList;
+    }
+        public int UpdateInjuryName(int InjuryId, string InjuryName)
+        {
+            using (SqlCommand cmd = new SqlCommand($"UPDATE Injury SET Injury_NAME = @InjuryName WHERE Injury_ID = @BInjuryID", conn))
+            {
+                cmd.Parameters.AddWithValue("@InjuryName", InjuryName);
+                cmd.Parameters.AddWithValue("@InjuryId", InjuryId);
+                return cmd.ExecuteNonQuery();
+
+            }
+        }
+        public int InsertInjury(string InjuryName)
+        {
+            using (SqlCommand cmd = new SqlCommand("INSERT INTO production.Brands (BRAND_NAME) VALUES (@BrandName); SELECT SCOPE_IDENTITY();", conn))
+            {
+                cmd.Parameters.AddWithValue("@InjuryName", InjuryName);
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
+    }
+    }
+}
