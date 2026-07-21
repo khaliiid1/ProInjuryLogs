@@ -1,6 +1,7 @@
 ﻿using InjuryLogs.controller;
 using InjuryLogs.View;
 using Microsoft.Data.SqlClient;
+using System.Runtime.CompilerServices;
 
 namespace ProInjuryLogs
 {
@@ -23,13 +24,13 @@ namespace ProInjuryLogs
                 switch (choice)
                 {
                     case "1":
-                        ViewAllInjjuries();
+                        ViewAllInjuries(); // this cases allows for actions such as delete add and edit factors to be carried out succesfully.
                         break;
                     case "2":
                         UpdateInjuryName();
                         break;
                     case "3":
-                        InsertInjury();
+                        InsertNewInjury();
                         break;
                     case "4":
                         DeleteInjuryByName();
@@ -46,9 +47,14 @@ namespace ProInjuryLogs
             storageManager.CloseConnection();
         }
 
+        private static void InsertInjury()
+        {
+            throw new NotImplementedException();
+        }
+
         private static void ViewAllInjuries()
         {
-            List<Injuries> injuryList = storageManager.GetAllInjuries();
+            List<Injury> injuryList = storageManager.GetAllInjuries();
             myView.DisplayInjuries(injuryList);
         }
         private static void UpdateInjuryName()
@@ -74,25 +80,25 @@ namespace ProInjuryLogs
             string injuryName = myView.GetInput();
             try
             {
-                rowsAffected = storageManager.DeleteInjuryByName(injuryName);
+                rowsAffected = storageManager.DeleteInjuriesByName(injuryName);
                 if (rowsAffected > 0)
                 {
-                    myView.DisplayMessage($"Rows affected: {rowsAffected}");
+                    myView.DisplayMessage($"Rows affected: {rowsAffected}"); // this means that the adding or deletion of injuuries was successful and the injury name provided was found in the database and deleted successfully  
                 }
                 else
                 {
-                    myView.DisplayMessage("No injury found with that name.");
+                    myView.DisplayMessage("No injury found with that name."); // if this message appears, it means the injury name provided does not exist in the database  
                 }
             }
             catch (SqlException ex)
             {
-                if (ex.Number == 547) // Foreign key violation
+                if (ex.Number == 547) 
                 {
                     myView.DisplayMessage("Cannot delete injury because it is referenced by existing products.");
                 }
                 else
                 {
-                    myView.DisplayMessage($"SQL Error occurred while deleting injury: {ex.Message}");
+                    myView.DisplayMessage($"SQL Error occurred while deleting injury: {ex.Message}"); // primary error message
                 }
             }
             catch (Exception ex)
@@ -103,4 +109,4 @@ namespace ProInjuryLogs
         }
     }
 }
-}
+

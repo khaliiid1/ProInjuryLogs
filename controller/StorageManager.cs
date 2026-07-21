@@ -108,5 +108,14 @@ namespace InjuryLogs.controller
             }
         }
 
+        internal int DeleteInjuriesByName(string injuryName)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal List<Injuries> GetAllInjuries()
+        {
+            throw new NotImplementedException();
+        }
     }
     }

@@ -12,16 +12,16 @@ namespace InjuryLogs.View
         public void DisplayBrandMenu()
         {
             Console.WriteLine("Injury Menu:");
-            Console.WriteLine("1. View all records in Injury table");
+            Console.WriteLine("1. View all records in Injury table"); // this is the viewing adding and deleting part of the codes. this is used for display
             Console.WriteLine("2. Update a injury's name by injury_id");
             Console.WriteLine("3. Insert a new brand");
             Console.WriteLine("4. Delete a injury by injury_name");
             Console.WriteLine("5. Exit");
             Console.Write("Select an option: ");
         }
-        public void DisplayBrands(List<Injury> brandsList)
+        public void DisplayBrands(List<Injuries> InjuryList)
         {
-            foreach (Injuries brandsObject in brandsList)
+            foreach (Injuries brandsObject in InjuryList)
             {
                 Console.WriteLine($"{brandsObject.InjuryID}, {brandsObject.InjuryName}");
             }
@@ -37,6 +37,11 @@ namespace InjuryLogs.View
         public int GetIntInput()
         {
             return int.Parse(Console.ReadLine());
+        }
+
+        internal void DisplayInjuries(List<Injuries> injuryList)
+        {
+            throw new NotImplementedException();
         }
     }
 }
