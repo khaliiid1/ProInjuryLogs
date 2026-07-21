@@ -8,8 +8,8 @@ namespace ProInjuryLogs
     internal class Program
     {
         private static StorageManager storageManager;
-        private static ConsoleView myView;
-        static void Main(string[] args)
+        private static ConsoleView myView;  
+        static void Main(string[] args) 
         {
 
             string connectionString = "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=BikeStores;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
