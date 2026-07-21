@@ -54,7 +54,7 @@ namespace ProInjuryLogs
 
         private static void ViewAllInjuries()
         {
-            List<Injury> injuryList = storageManager.GetAllInjuries();
+            List<ProInjuryLogs.Model.Injuries> injuryList = storageManager.GetAllInjuries();
             myView.DisplayInjuries(injuryList);
         }
         private static void UpdateInjuryName()
