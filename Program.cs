@@ -1,5 +1,5 @@
 ﻿using InjuryLogs.controller;
-using InjuryLogs.View;
+using ProInjuryLogs.View;
 using Microsoft.Data.SqlClient;
 using System.Runtime.CompilerServices;
 

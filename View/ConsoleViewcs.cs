@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InjuryLogs.View
+namespace ProInjuryLogs.View
 {
     public class ConsoleView
     {
