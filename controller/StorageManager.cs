@@ -101,7 +101,7 @@ namespace InjuryLogs.controller
         }
         public int DeleteBrandByName(string InjuryName)
         {
-            using (SqlCommand cmd = new SqlCommand("DELETE FROM production.Brands WHERE BRAND_NAME = @BrandName", conn))
+            using (SqlCommand cmd = new SqlCommand("DELETE FROM production.Brands WHERE BRAND_NAME = @BrandName", conn)) // this method will be called or used when deleting injuries
             {
                 cmd.Parameters.AddWithValue("@InuryName", InjuryName);
                 return cmd.ExecuteNonQuery();
@@ -119,7 +119,7 @@ namespace InjuryLogs.controller
         }
     }
     
-    public int Select queries()
+    public int Select Queries()
     {
          Select Team From Atheletes where Sport = 'Football';
 
