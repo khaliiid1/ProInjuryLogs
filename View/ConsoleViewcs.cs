@@ -48,5 +48,24 @@ namespace ProInjuryLogs.View
         {
             throw new NotImplementedException();
         }
+    
+    public void AdminMenu()
+        {
+            Console.WriteLine(" ADMIN MENU ");
+            Console.WriteLine("1. View All Injuries");
+            Console.WriteLine("2. Update Injury Name");
+            Console.WriteLine("3. Insert New Injury");
+            Console.WriteLine("4. Delete Injury By Name");
+            Console.WriteLine("5. Back to Role Selection");
+            Console.Write("Enter choice: ");
+        }
+
+        public void UserMenu()
+        {
+            Console.WriteLine(" END USER MENU");
+            Console.WriteLine("1. View All Injuries");
+            Console.WriteLine("2. Back to Role Selection");
+            Console.Write("Enter choice: ");
+        }
     }
 }

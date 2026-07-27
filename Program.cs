@@ -1,22 +1,22 @@
 ﻿using InjuryLogs.controller;
 using ProInjuryLogs.View;
 using Microsoft.Data.SqlClient;
-using System.Runtime.CompilerServices;
 
 namespace ProInjuryLogs
 {
     internal class Program
     {
         private static StorageManager storageManager;
-        private static ConsoleView myView;  
-        static void Main(string[] args) 
-        {
+        private static ConsoleView myView;
 
+        static void Main(string[] args)
+        {
             string connectionString = "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=BikeStores;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
 
             storageManager = new StorageManager(connectionString);
             myView = new ConsoleView();
-            bool exit = false;   
+
+            bool exit = false;
             while (!exit)
             {
                 myView.DisplayMessage("Welcome to the Pro injurylogs");
@@ -25,32 +25,39 @@ namespace ProInjuryLogs
 
                 string input = myView.GetInput();
 
-                switch (input) 
+                switch (input)
                 {
                     case "1":
                         myView.DisplayMessage("Role selected: Admin\n");
-                        RunAdminMenu(); 
-                        exit = true; 
+                        DisplayAdminMenu();
                         break;
 
                     case "2":
                         myView.DisplayMessage("Role selected: EndUser\n");
-                        RunEndUserMenu(); 
+                        DisplayUserMenu();
                         break;
 
                     default:
                         myView.DisplayMessage("Invalid option. Please enter 1 or 2.");
                         break;
                 }
+            }
 
+            storageManager.CloseConnection();
+        }
 
+        private static void DisplayAdminMenu()
+        {
+            bool exitAdmin = false;
+            while (!exitAdmin)
+            {
+                myView.AdminMenu();
+                string choice = myView.GetInput();
 
-                myView.DisplayInjuryMenu();
-                string choice = myView.GetInput(); 
                 switch (choice)
                 {
                     case "1":
-                        ViewAllInjuries(); // this cases allows for actions such as delete add and edit factors to be carried out succesfully.
+                        ViewAllInjuries();
                         break;
                     case "2":
                         UpdateInjuryName();
@@ -60,44 +67,64 @@ namespace ProInjuryLogs
                         break;
                     case "4":
                         DeleteInjuryByName();
-                        //Need to ensure that can't delete if the linked to an exisisting relationships and catches errors
                         break;
                     case "5":
-                        exit = true;
+                        exitAdmin = true;
                         break;
                     default:
                         myView.DisplayMessage("Invalid option. Please try again.");
                         break;
                 }
             }
-            storageManager.CloseConnection();
         }
 
-        private static void InsertInjury()
+        private static void DisplayUserMenu()
         {
-            throw new NotImplementedException();
+            bool exitUser = false;
+            while (!exitUser)
+            {
+                myView.UserMenu();
+                string choice = myView.GetInput();
+
+                switch (choice)
+                {
+                    case "1":
+                        ViewAllInjuries();
+                        break;
+                    case "2":
+                        exitUser = true;
+                        break;
+                    default:
+                        myView.DisplayMessage("Invalid option. Please try again.");
+                        break;
+                }
+            }
         }
 
         private static void ViewAllInjuries()
-        {            List<ProInjuryLogs.Model.Injuries> injuryList = storageManager.GetAllInjuries();
+        {
+            List<ProInjuryLogs.Model.Injuries> injuryList = storageManager.GetAllInjuries();
             myView.DisplayInjuries(injuryList);
         }
+
         private static void UpdateInjuryName()
         {
             myView.DisplayMessage("Enter the injury_id to update: ");
             int injuryId = myView.GetIntInput();
             myView.DisplayMessage("Enter the new injury name: ");
             string injuryName = myView.GetInput();
-            int rowsAffected = storageManager.UpdateInjuryName(injuryId, injuryName);  // this section is for updating the the injuries incase of false injury
+            int rowsAffected = storageManager.UpdateInjuryName(injuryId, injuryName);
             myView.DisplayMessage($"Rows affected: {rowsAffected}");
         }
+
         private static void InsertNewInjury()
         {
             myView.DisplayMessage("Enter the new injury name: ");
             string injuryName = myView.GetInput();
-            int generatedId = storageManager.InsertInjury(injuryName);
-            myView.DisplayMessage($"New injury inserted with ID: {generatedId}");  // tis ensures the user knows their actons have been entered, instead of letting them wonder if anyhing has been changed.
+            int rowsAffected = storageManager.InsertInjury(injuryName);
+            myView.DisplayMessage($"Rows affected: {rowsAffected}");
         }
+
         private static void DeleteInjuryByName()
         {
             int rowsAffected;
@@ -108,22 +135,22 @@ namespace ProInjuryLogs
                 rowsAffected = storageManager.DeleteInjuriesByName(injuryName);
                 if (rowsAffected > 0)
                 {
-                    myView.DisplayMessage($"Rows affected: {rowsAffected}"); // this means that the adding or deletion of injuuries was successful and the injury name provided was found in the database and deleted successfully  
+                    myView.DisplayMessage($"Rows affected: {rowsAffected}");
                 }
                 else
                 {
-                    myView.DisplayMessage("No injury found with that name."); // if this message appears, it means the injury name provided does not exist in the database  
+                    myView.DisplayMessage("No injury found with that name.");
                 }
             }
             catch (SqlException ex)
             {
-                if (ex.Number == 547) 
+                if (ex.Number == 547)
                 {
                     myView.DisplayMessage("Cannot delete injury because it is referenced by existing injury.");
                 }
                 else
                 {
-                    myView.DisplayMessage($"SQL Error occurred while deleting injury: {ex.Message}"); // primary error message
+                    myView.DisplayMessage($"SQL Error occurred while deleting injury: {ex.Message}");
                 }
             }
             catch (Exception ex)
@@ -132,18 +159,5 @@ namespace ProInjuryLogs
                 Console.ReadKey();
             }
         }
-
-        private static void RunAdminMenu()
-        {
-            myView.DisplayMessage("Admin menu not implemented yet.");
-            // Replace with real admin menu logic (display choices, handle input, call storageManager, etc.)
-        }
-
-        private static void RunEndUserMenu()
-        {
-            myView.DisplayMessage("EndUser menu not implemented yet.");
-            // Replace with real end-user menu logic.
-        }
     }
 }
-
