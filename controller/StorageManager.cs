@@ -119,18 +119,7 @@ namespace InjuryLogs.controller
         }
     }
     
-    public int Select Queries()
-    {
-         Select Team From Atheletes where Sport = 'Football';
-
-        SELECT FirstName, LastName, InjuryType
-
-FROM Athletes
-
-Join Injury on Atheletes.Athlete_ID = Injury.Athlete_ID
-
-Where InjuryType Like '%Knee%';
-
+ 
 
 
 

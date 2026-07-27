@@ -43,5 +43,10 @@ namespace ProInjuryLogs.View
         {
             throw new NotImplementedException();
         }
+
+        internal void DisplayInjuryMenu()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

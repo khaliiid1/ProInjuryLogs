@@ -19,7 +19,33 @@ namespace ProInjuryLogs
             bool exit = false;   
             while (!exit)
             {
-                myView.DisplayBrandMenu();
+                myView.DisplayMessage("Welcome to the Pro injurylogs");
+                myView.DisplayMessage("please enter 1. for admin");
+                myView.DisplayMessage("please enter 2. for user");
+
+                string input = myView.GetInput();
+
+                switch (input) 
+                {
+                    case "1":
+                        myView.DisplayMessage("Role selected: Admin\n");
+                        RunAdminMenu(); 
+                        exit = true; 
+                        break;
+
+                    case "2":
+                        myView.DisplayMessage("Role selected: EndUser\n");
+                        RunEndUserMenu(); 
+                        break;
+
+                    default:
+                        myView.DisplayMessage("Invalid option. Please enter 1 or 2.");
+                        break;
+                }
+
+
+
+                myView.DisplayInjuryMenu();
                 string choice = myView.GetInput(); 
                 switch (choice)
                 {
@@ -105,6 +131,18 @@ namespace ProInjuryLogs
                 myView.DisplayMessage($"Error occurred while deleting injury: {ex.Message}");
                 Console.ReadKey();
             }
+        }
+
+        private static void RunAdminMenu()
+        {
+            myView.DisplayMessage("Admin menu not implemented yet.");
+            // Replace with real admin menu logic (display choices, handle input, call storageManager, etc.)
+        }
+
+        private static void RunEndUserMenu()
+        {
+            myView.DisplayMessage("EndUser menu not implemented yet.");
+            // Replace with real end-user menu logic.
         }
     }
 }
