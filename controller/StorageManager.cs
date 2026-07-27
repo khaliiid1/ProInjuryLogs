@@ -10,7 +10,7 @@ namespace InjuryLogs.controller
 {
     public class StorageManager
 
-    {
+    {      
         private SqlConnection conn;
         public StorageManager(string connectionString)
         {
@@ -118,4 +118,20 @@ namespace InjuryLogs.controller
             throw new NotImplementedException();
         }
     }
+    
+    public int Select queries()
+    {
+         Select Team From Atheletes where Sport = 'Football';
+
+        SELECT FirstName, LastName, InjuryType
+
+FROM Athletes
+
+Join Injury on Atheletes.Athlete_ID = Injury.Athlete_ID
+
+Where InjuryType Like '%Knee%';
+
+
+
+
     }

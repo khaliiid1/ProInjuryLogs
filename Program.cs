@@ -16,11 +16,11 @@ namespace ProInjuryLogs
 
             storageManager = new StorageManager(connectionString);
             myView = new ConsoleView();
-            bool exit = false;
+            bool exit = false;   
             while (!exit)
             {
                 myView.DisplayBrandMenu();
-                string choice = myView.GetInput();
+                string choice = myView.GetInput(); 
                 switch (choice)
                 {
                     case "1":
@@ -53,8 +53,7 @@ namespace ProInjuryLogs
         }
 
         private static void ViewAllInjuries()
-        {
-            List<ProInjuryLogs.Model.Injuries> injuryList = storageManager.GetAllInjuries();
+        {            List<ProInjuryLogs.Model.Injuries> injuryList = storageManager.GetAllInjuries();
             myView.DisplayInjuries(injuryList);
         }
         private static void UpdateInjuryName()
@@ -63,7 +62,7 @@ namespace ProInjuryLogs
             int injuryId = myView.GetIntInput();
             myView.DisplayMessage("Enter the new injury name: ");
             string injuryName = myView.GetInput();
-            int rowsAffected = storageManager.UpdateInjuryName(injuryId, injuryName);
+            int rowsAffected = storageManager.UpdateInjuryName(injuryId, injuryName);  // this section is for updating the the injuries incase of false injury
             myView.DisplayMessage($"Rows affected: {rowsAffected}");
         }
         private static void InsertNewInjury()
@@ -71,7 +70,7 @@ namespace ProInjuryLogs
             myView.DisplayMessage("Enter the new injury name: ");
             string injuryName = myView.GetInput();
             int generatedId = storageManager.InsertInjury(injuryName);
-            myView.DisplayMessage($"New injury inserted with ID: {generatedId}");
+            myView.DisplayMessage($"New injury inserted with ID: {generatedId}");  // tis ensures the user knows their actons have been entered, instead of letting them wonder if anyhing has been changed.
         }
         private static void DeleteInjuryByName()
         {
@@ -94,7 +93,7 @@ namespace ProInjuryLogs
             {
                 if (ex.Number == 547) 
                 {
-                    myView.DisplayMessage("Cannot delete injury because it is referenced by existing products.");
+                    myView.DisplayMessage("Cannot delete injury because it is referenced by existing injury.");
                 }
                 else
                 {
