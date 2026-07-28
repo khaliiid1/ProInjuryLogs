@@ -1,6 +1,7 @@
 ﻿using InjuryLogs.controller;
 using ProInjuryLogs.View;
 using Microsoft.Data.SqlClient;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProInjuryLogs
 {
@@ -20,9 +21,14 @@ namespace ProInjuryLogs
             while (!exit)
             {
                 myView.DisplayMessage("Welcome to the Pro injurylogs");
+                [Required(ErrorMessage = "Name is required.")]
+                StringLength(50, ErrorMessage = "Name cannot exceed 50 characters.")]
+
                 Console.WriteLine("please enter your name");
                 string name = Console.ReadLine();
-                Console.WriteLine($"Hello, {name}! pleae select your role:");
+                Console.WriteLine("please enter your password");
+                string password = Console.ReadLine();
+                Console.WriteLine($"Hello, {name}! please select your role:");
 
                 myView.DisplayMessage(" enter 1. for admin");
                 myView.DisplayMessage(" enter 2. for user");
@@ -96,9 +102,9 @@ namespace ProInjuryLogs
                         ViewAllInjuries();
                         break;
                     case "2":
-                        ViewInjuryByDate();
+                        ViewInjuryByDuration();
                         break; case "3":    
-                    case "":
+                    case "": 
                         exitUser = true;
                         break;
                     default:

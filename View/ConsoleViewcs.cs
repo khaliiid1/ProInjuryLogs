@@ -9,7 +9,7 @@ namespace ProInjuryLogs.View
 {
     public class ConsoleView
     {
-        public void DisplayBrandMenu()
+        public void DisplayInjuryMenu()
         {
             Console.WriteLine("Injury Menu:");
             Console.WriteLine("1. View all records in Injury table"); // this is the viewing adding and deleting part of the codes. this is used for display
@@ -44,7 +44,7 @@ namespace ProInjuryLogs.View
             throw new NotImplementedException();
         }
 
-        internal void DisplayInjuryMenu()
+        internal void DisplayinjuryMenu()
         {
             throw new NotImplementedException();
         }
@@ -58,7 +58,7 @@ namespace ProInjuryLogs.View
             Console.WriteLine("4. Delete Injury By Name");
             Console.WriteLine("5. Back to Role Selection");
             Console.Write("Enter choice: ");
-        }
+        } 
 
         public void UserMenu()
         {
@@ -67,5 +67,7 @@ namespace ProInjuryLogs.View
             Console.WriteLine("2. Back to Role Selection");
             Console.Write("Enter choice: ");
         }
+         public void DisplayInjuryByDate(List<Injuries> injuryList)
+            { throw new NotImplementedException(); }
     }
 }
