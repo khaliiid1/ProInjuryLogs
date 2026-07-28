@@ -20,8 +20,12 @@ namespace ProInjuryLogs
             while (!exit)
             {
                 myView.DisplayMessage("Welcome to the Pro injurylogs");
-                myView.DisplayMessage("please enter 1. for admin");
-                myView.DisplayMessage("please enter 2. for user");
+                Console.WriteLine("please enter your name");
+                string name = Console.ReadLine();
+                Console.WriteLine($"Hello, {name}! pleae select your role:");
+
+                myView.DisplayMessage(" enter 1. for admin");
+                myView.DisplayMessage(" enter 2. for user");
 
                 string input = myView.GetInput();
 
@@ -92,6 +96,9 @@ namespace ProInjuryLogs
                         ViewAllInjuries();
                         break;
                     case "2":
+                        ViewInjuryByDate();
+                        break; case "3":    
+                    case "":
                         exitUser = true;
                         break;
                     default:
