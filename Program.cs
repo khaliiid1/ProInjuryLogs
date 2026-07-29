@@ -1,7 +1,8 @@
-﻿using InjuryLogs.controller;
-using ProInjuryLogs.View;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
-using System.ComponentModel.DataAnnotations;
+using InjuryLogs.controller;
+using ProInjuryLogs.View;
 
 namespace ProInjuryLogs
 {
@@ -20,18 +21,28 @@ namespace ProInjuryLogs
             bool exit = false;
             while (!exit)
             {
-                myView.DisplayMessage("Welcome to the Pro injurylogs");
-                [Required(ErrorMessage = "Name is required.")]
-                StringLength(50, ErrorMessage = "Name cannot exceed 50 characters.")]
+                myView.DisplayMessage("=== Welcome to Pro Injury Logs ===");
+                Console.WriteLine("Please enter your name (or 'exit' to quit):");
+                string name = myView.GetInput();
 
-                Console.WriteLine("please enter your name");
-                string name = Console.ReadLine();
-                Console.WriteLine("please enter your password");
-                string password = Console.ReadLine();
-                Console.WriteLine($"Hello, {name}! please select your role:");
+                if (name.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                {
+                    exit = true;
+                    break;
+                }
 
-                myView.DisplayMessage(" enter 1. for admin");
-                myView.DisplayMessage(" enter 2. for user");
+                myView.DisplayMessage("Please enter your password:");
+                string password = myView.GetInput();
+
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    myView.DisplayMessage("Password is required. Please try again.\n");
+                    continue; // Restarts loop to prompt again
+                }
+
+                Console.WriteLine($"\nHello, {name}! Please select your role:");
+                myView.DisplayMessage("1. Admin");
+                myView.DisplayMessage("2. User");
 
                 string input = myView.GetInput();
 
@@ -48,12 +59,13 @@ namespace ProInjuryLogs
                         break;
 
                     default:
-                        myView.DisplayMessage("Invalid option. Please enter 1 or 2.");
+                        myView.DisplayMessage("Invalid option. Please enter 1 or 2.\n");
                         break;
                 }
             }
 
             storageManager.CloseConnection();
+            myView.DisplayMessage("Goodbye!");
         }
 
         private static void DisplayAdminMenu()
@@ -102,9 +114,10 @@ namespace ProInjuryLogs
                         ViewAllInjuries();
                         break;
                     case "2":
-                        ViewInjuryByDuration();
-                        break; case "3":    
-                    case "": 
+                        // Add ViewInjuryByDuration() here if needed
+                        break;
+                    case "3":
+                    case "":
                         exitUser = true;
                         break;
                     default:
@@ -172,5 +185,44 @@ namespace ProInjuryLogs
                 Console.ReadKey();
             }
         }
+
+        private static bool ValidateInput(string input, int maxLength, int minLength, char validationType)
+        {
+            if (input == null || input.Length < minLength || input.Length > maxLength)
+            {
+                return false;
+            }
+
+            foreach (char c in input)
+            {
+                switch (validationType)
+                {
+                    case 'N': // Numeric
+                        if (!char.IsDigit(c))
+                        {
+                            myView.DisplayMessage("Input must be numeric.");
+                            return false;
+                        }
+                        break;
+                    case 'A': // Alphabetic
+                        if (!char.IsLetter(c))
+                        {
+                            myView.DisplayMessage("Input must be alphabetic.");
+                            return false;
+                        }
+                        break;
+                    case 'M': // Alphanumeric
+                        if (!char.IsLetterOrDigit(c))
+                        {
+                            myView.DisplayMessage("Input must be alphanumeric.");
+                            return false;
+                        }
+                        break;
+                }
+            }
+
+            return true;
+        }
+
     }
 }

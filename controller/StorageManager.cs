@@ -10,7 +10,7 @@ namespace InjuryLogs.controller
 {
     public class StorageManager
 
-    {      
+    {
         private SqlConnection conn;
         public StorageManager(string connectionString)
         {
@@ -80,7 +80,7 @@ namespace InjuryLogs.controller
                 Console.WriteLine($"Error retrieving injuries: {ex.Message}");
             }
             return InjuryList;
-    }
+        }
         public int UpdateInjuryName(int InjuryId, string InjuryName)
         {
             using (SqlCommand cmd = new SqlCommand($"UPDATE Injury SET Injury_NAME = @InjuryName WHERE Injury_ID = @BInjuryID", conn))
@@ -107,6 +107,14 @@ namespace InjuryLogs.controller
                 return cmd.ExecuteNonQuery();
             }
         }
+        public int ViewInjuriesByDuration(string duration)
+        {
+            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM injuries.Injuries WHERE DURATION = @Duration", conn))
+            {
+                cmd.Parameters.AddWithValue("@Duration", duration);
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
 
         internal int DeleteInjuriesByName(string injuryName)
         {
@@ -117,10 +125,16 @@ namespace InjuryLogs.controller
         {
             throw new NotImplementedException();
         }
+        public SqlDataReader RunReportsQueries(String query)
+        { 
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                return cmd.ExecuteReader();
+            }
+        }
     }
+    
+}
     
  
 
-
-
-    }
