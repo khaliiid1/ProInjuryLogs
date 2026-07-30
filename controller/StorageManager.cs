@@ -2,23 +2,20 @@
 using ProInjuryLogs.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InjuryLogs.controller
 {
     public class StorageManager
-
     {
         private SqlConnection conn;
+
         public StorageManager(string connectionString)
         {
             try
             {
                 conn = new SqlConnection(connectionString);
                 conn.Open();
-                Console.WriteLine("Connection Successful"); // if successfull this is the massage that will be displayed.
+                Console.WriteLine("Connection Successful");
             }
             catch (InvalidOperationException)
             {
@@ -27,8 +24,7 @@ namespace InjuryLogs.controller
             catch (SqlException e)
             {
                 Console.WriteLine($"SQL Error: {e.Message}");
-                Console.WriteLine($"SQL Error: {e.Message}");
-                if (e.Message.Contains("attach an auto-named database")) // these are the possible fixes that could help the databse run correctly.
+                if (e.Message.Contains("attach an auto-named database"))
                 {
                     Console.WriteLine("Fix: Database is already attached OR file is in use.");
                     Console.WriteLine("Try this:");
@@ -36,13 +32,11 @@ namespace InjuryLogs.controller
                     Console.WriteLine("2. Use Initial Catalog instead");
                     Console.WriteLine("3. Or delete/rename duplicate DB in SQL Server");
                 }
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error connecting to database: {ex.Message}");  // if there is an error this is the message that will be displayed.
+                Console.WriteLine($"Error connecting to database: {ex.Message}");
             }
-
         }
 
         public void CloseConnection()
@@ -53,10 +47,11 @@ namespace InjuryLogs.controller
                 Console.WriteLine("Connection Closed");
             }
         }
-        public List<Injuries> GetAllInjury()
+
+        public List<Injuries> GetAllInjuries()
         {
-            List<Injuries> InjuryList = new List<Injuries>();
-            string query = "SELECT * FROM Injury";
+            List<Injuries> injuryList = new List<Injuries>();
+            string query = "SELECT Athlete_ID, InjuryType FROM dbo.Injury";
             try
             {
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -65,12 +60,12 @@ namespace InjuryLogs.controller
                     {
                         while (reader.Read())
                         {
-                            Injuries Injury = new Injuries
+                            Injuries injury = new Injuries
                             {
                                 InjuryID = reader.GetInt32(0),
                                 InjuryName = reader.GetString(1)
                             };
-                            InjuryList.Add(Injury);
+                            injuryList.Add(injury);
                         }
                     }
                 }
@@ -79,62 +74,53 @@ namespace InjuryLogs.controller
             {
                 Console.WriteLine($"Error retrieving injuries: {ex.Message}");
             }
-            return InjuryList;
+            return injuryList;
         }
-        public int UpdateInjuryName(int InjuryId, string InjuryName)
-        {
-            using (SqlCommand cmd = new SqlCommand($"UPDATE Injury SET Injury_NAME = @InjuryName WHERE Injury_ID = @BInjuryID", conn))
-            {
-                cmd.Parameters.AddWithValue("@InjuryName", InjuryName);
-                cmd.Parameters.AddWithValue("@InjuryId", InjuryId);
-                return cmd.ExecuteNonQuery();
 
-            }
-        }
-        public int InsertInjury(string InjuryName)
+        public int UpdateInjuryName(int injuryId, string injuryName)
         {
-            using (SqlCommand cmd = new SqlCommand("INSERT INTO production.Brands (BRAND_NAME) VALUES (@BrandName); SELECT SCOPE_IDENTITY();", conn))
+            string query = "UPDATE dbo.Injury SET InjuryType = @InjuryName WHERE Athlete_ID = @InjuryId";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
             {
-                cmd.Parameters.AddWithValue("@InjuryName", InjuryName);
-                return Convert.ToInt32(cmd.ExecuteScalar());
-            }
-        }
-        public int DeleteBrandByName(string InjuryName)
-        {
-            using (SqlCommand cmd = new SqlCommand("DELETE FROM production.Brands WHERE BRAND_NAME = @BrandName", conn)) // this method will be called or used when deleting injuries
-            {
-                cmd.Parameters.AddWithValue("@InuryName", InjuryName);
+                cmd.Parameters.AddWithValue("@InjuryName", injuryName);
+                cmd.Parameters.AddWithValue("@InjuryId", injuryId);
                 return cmd.ExecuteNonQuery();
             }
         }
+
+        public int InsertInjury(string injuryName)
+        {
+            string query = "INSERT INTO dbo.Injury (InjuryType) VALUES (@InjuryName);";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@InjuryName", injuryName);
+                return cmd.ExecuteNonQuery();
+            }
+        }
+
+        public int DeleteInjuriesByName(string injuryName)
+        {
+            string query = "DELETE FROM dbo.Injury WHERE InjuryType = @InjuryName";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@InjuryName", injuryName);
+                return cmd.ExecuteNonQuery();
+            }
+        }
+
         public int ViewInjuriesByDuration(string duration)
         {
-            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM injuries.Injuries WHERE DURATION = @Duration", conn))
+            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM dbo.Injury WHERE DATEDIFF(day, StartDate, RecoveryDate) = @Duration", conn))
             {
                 cmd.Parameters.AddWithValue("@Duration", duration);
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
 
-        internal int DeleteInjuriesByName(string injuryName)
+        public SqlDataReader RunReportsQueries(string query)
         {
-            throw new NotImplementedException();
-        }
-
-        internal List<Injuries> GetAllInjuries()
-        {
-            throw new NotImplementedException();
-        }
-        public SqlDataReader RunReportsQueries(String query)
-        { 
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                return cmd.ExecuteReader();
-            }
+            SqlCommand cmd = new SqlCommand(query, conn);
+            return cmd.ExecuteReader();
         }
     }
-    
 }
-    
- 
-

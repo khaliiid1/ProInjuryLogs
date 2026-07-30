@@ -223,6 +223,32 @@ namespace ProInjuryLogs
 
             return true;
         }
+        private static void RunSelectedReport(int choice)
+        {
+            string query = "";
 
-    }
+            switch (choice)
+            {
+                case 1:
+                    query = "SELECT DISTINCT TeamName FROM dbo.Athletes WHERE Sports = 'Football';";
+                    break;
+
+                case 2:
+                    query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.InjuryType LIKE '%Knee%';";
+                    break;
+                case 3:
+                    query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.InjuryType LIKE '%Concussion%';";
+                    break;
+                    case 4: 
+                    query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.InjuryType LIKE '%Shoulder%';";
+                    case 5:
+                    query = "SELECT Athletes.LastName, Athletes.FirstName, Injury.StartDate, Injury.RecoveryDate FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.StartDate >= '2026-01-01' AND Injury.StartDate <= '2026-02-13';";
+                    break;
+
+
+
+
+
+
+            }
 }
