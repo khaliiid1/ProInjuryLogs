@@ -37,7 +37,7 @@ namespace ProInjuryLogs
                 if (string.IsNullOrWhiteSpace(password))
                 {
                     myView.DisplayMessage("Password is required. Please try again.\n");
-                    continue; // Restarts loop to prompt again
+                    continue; 
                 }
 
                 Console.WriteLine($"\nHello, {name}! Please select your role:");
@@ -114,10 +114,7 @@ namespace ProInjuryLogs
                         ViewAllInjuries();
                         break;
                     case "2":
-                        // Add ViewInjuryByDuration() here if needed
-                        break;
-                    case "3":
-                    case "":
+                    
                         exitUser = true;
                         break;
                     default:
@@ -223,6 +220,7 @@ namespace ProInjuryLogs
 
             return true;
         }
+
         private static void RunSelectedReport(int choice)
         {
             string query = "";
@@ -236,9 +234,11 @@ namespace ProInjuryLogs
                 case 2:
                     query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.InjuryType LIKE '%Knee%';";
                     break;
+
                 case 3:
-                    query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.InjuryType LIKE '%Concussion%';";
+                    query = "SELECT LastName, FirstName, Sports, TeamName FROM dbo.Athletes ORDER BY TeamName ASC;";
                     break;
+
                 case 4:
                     query = "SELECT Athletes.LastName, Athletes.FirstName, Injury.InjuryType, Injury.StartDate, Injury.RecoveryDate FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Athletes.Athlete_ID = 5;";
                     break;
@@ -288,12 +288,12 @@ namespace ProInjuryLogs
                     break;
 
                 default:
-                myView. DisplayMessage("Invalid report choice.");
-                    break;
-
-
-
+                    myView.DisplayMessage("Invalid report choice.");
+                    return; 
             }
+
+            
+      
         }
     }
 }
