@@ -239,16 +239,61 @@ namespace ProInjuryLogs
                 case 3:
                     query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.InjuryType LIKE '%Concussion%';";
                     break;
-                    case 4: 
-                    query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.InjuryType LIKE '%Shoulder%';";
-                    case 5:
+                case 4:
+                    query = "SELECT Athletes.LastName, Athletes.FirstName, Injury.InjuryType, Injury.StartDate, Injury.RecoveryDate FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Athletes.Athlete_ID = 5;";
+                    break;
+
+                case 5:
                     query = "SELECT Athletes.LastName, Athletes.FirstName, Injury.StartDate, Injury.RecoveryDate FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID WHERE Injury.StartDate >= '2026-01-01' AND Injury.StartDate <= '2026-02-13';";
+                    break;
+
+                case 6:
+                    query = "SELECT SportName, LeagueName, TeamsCount FROM dbo.Sports ORDER BY SportName ASC;";
+                    break;
+
+                case 7:
+                    query = "SELECT TeamName, LeagueName, InjuredPlayerCount FROM dbo.Team ORDER BY InjuredPlayerCount DESC, TeamName ASC;";
+                    break;
+
+                case 8:
+                    query = "SELECT InjuryType, DATEDIFF(day, StartDate, RecoveryDate) AS DaysDuration FROM dbo.Injury;";
+                    break;
+
+                case 9:
+                    query = "SELECT Athletes.FirstName, Athletes.LastName, Injury.InjuryType FROM dbo.Athletes JOIN dbo.Injury ON Athletes.Athlete_ID = Injury.Athlete_ID;";
+                    break;
+
+                case 10:
+                    query = "SELECT FirstName, LastName, TeamName FROM dbo.Athletes WHERE LastName LIKE 'Smit%';";
+                    break;
+
+                case 11:
+                    query = "SELECT SportName, LeagueName, ManagersCount FROM dbo.Sports ORDER BY ManagersCount DESC;";
+                    break;
+
+                case 12:
+                    query = "SELECT SportName, LeagueName, ManagersCount FROM dbo.Sports WHERE ManagersCount < 10 ORDER BY ManagersCount DESC;";
+                    break;
+
+                case 13:
+                    query = "SELECT FirstName, LastName, Phone, TeamName FROM dbo.Athletes WHERE TeamName LIKE 'Warrior%';";
+                    break;
+
+                case 14:
+                    query = "SELECT FirstName, LastName, Sports, TeamName FROM dbo.Athletes WHERE LastName LIKE 'S%';";
+                    break;
+
+                case 15:
+                    query = "SELECT Athlete_ID, FirstName, LastName, Phone, TeamName FROM dbo.Athletes WHERE LastName NOT LIKE 'S%';";
+                    break;
+
+                default:
+                myView. DisplayMessage("Invalid report choice.");
                     break;
 
 
 
-
-
-
             }
+        }
+    }
 }
