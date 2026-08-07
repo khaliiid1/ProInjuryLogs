@@ -4,7 +4,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using InjuryLogs.controller;
 using ProInjuryLogs.Model;
-using ProInjuryLogs.View;
+using ConsoleView = ProInjuryLogs.View.ConsoleView;
 
 namespace ProInjuryLogs
 {
@@ -15,8 +15,8 @@ namespace ProInjuryLogs
 
         static void Main(string[] args)
         {
-            string connectionString = "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=BikeStores;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
-
+            string connectionString = "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=InjuryLogs;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
+ 
             storageManager = new StorageManager(connectionString);
             myView = new ConsoleView();
 
@@ -24,36 +24,134 @@ namespace ProInjuryLogs
             while (!exit)
             {
                 myView.DisplayMessage("=== Welcome to Pro Injury Logs ===");
+                myView.DisplayMessage("1. Login");
+                myView.DisplayMessage("2. Create Account");
+                myView.DisplayMessage("3. Exit");
 
-                string name = GetValidatedInput("Please enter your name:", minLength: 2, maxLength: 20);
-                string password = GetValidatedInput("Please enter your password:", minLength: 5, maxLength: 15);
+                string mainChoice = myView.GetInput();
 
-                Console.WriteLine($"\nHello, {name}! Please select your role:");
-                myView.DisplayMessage("1. Admin");
-                myView.DisplayMessage("2. User");
-
-                string input = myView.GetInput();
-
-                switch (input)
+                switch (mainChoice)
                 {
                     case "1":
-                        myView.DisplayMessage("Role selected: Admin\n");
-                        DisplayAdminMenu();
+                        HandleLogin();
                         break;
 
                     case "2":
-                        myView.DisplayMessage("Role selected: User\n");
-                        DisplayUserMenu();
+                        CreateAccount();
+                        break;
+
+                    case "3":
+                        exit = true;
                         break;
 
                     default:
-                        myView.DisplayMessage("Invalid option. Please enter 1 or 2.\n");
+                        myView.DisplayMessage("Invalid option. Please enter 1, 2, or 3.\n");
                         break;
                 }
             }
 
             storageManager.CloseConnection();
             myView.DisplayMessage("Goodbye!");
+        }
+
+        private static void HandleLogin()
+        {
+            string name = GetValidatedInput("Please enter your name:", minLength: 2, maxLength: 20);
+            string password = GetValidatedInput("Please enter your password:", minLength: 5, maxLength: 15);
+
+            Console.WriteLine($"\nHello, {name}! Please select your role:");
+            myView.DisplayMessage("1. Admin");
+            myView.DisplayMessage("2. User");
+
+            string input = myView.GetInput();
+
+            switch (input)
+            {
+                case "1":
+                    myView.DisplayMessage("Role selected: Admin\n");
+                    DisplayAdminMenu();
+                    break;
+
+                case "2":
+                    myView.DisplayMessage("Role selected: User\n");
+                    DisplayUserMenu();
+                    break;
+
+                default:
+                    myView.DisplayMessage("Invalid option. Returning to main menu.\n");
+                    break;
+            }
+        }
+
+        private static void CreateAccount()
+        {
+            myView.DisplayMessage("\n=== Create New Account ===");
+
+            // Boundary: Username must be between 3 and 20 characters with no spaces
+            string username;
+            while (true)
+            {
+                username = GetValidatedInput("Enter new username (3-20 characters, no spaces):", minLength: 3, maxLength: 20);
+                if (username.Contains(" "))
+                {
+                    myView.DisplayMessage("Error: Username cannot contain spaces. Try again.\n");
+                    continue;
+                }
+
+                // Boundary: Username uniqueness check
+                if (storageManager.UserExists(username))
+                {
+                    myView.DisplayMessage("Error: Username already exists. Please choose a different one.\n");
+                    continue;
+                }
+
+                break;
+            }
+
+            // Boundary: Password length requirement + confirmation match
+            string password;
+            while (true)
+            {
+                password = GetValidatedInput("Enter new password (6-15 characters):", minLength: 6, maxLength: 15);
+
+                myView.DisplayMessage("Confirm your password:");
+                string confirmPassword = myView.GetInput()?.Trim() ?? string.Empty;
+
+                if (password != confirmPassword)
+                {
+                    myView.DisplayMessage("Error: Passwords do not match. Try again.\n");
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // Persistence: Save account into database
+            try
+            {
+                int rows = storageManager.CreateUser(username, password);
+                if (rows > 0)
+                {
+                    myView.DisplayMessage($"\nAccount successfully created and saved for '{username}'!");
+
+                    // Option to log in immediately
+                    myView.DisplayMessage("\nWould you like to log in now? (1 = Yes, 2 = No)");
+                    string choice = myView.GetInput();
+                    if (choice == "1")
+                    {
+                        HandleLogin();
+                    }
+                }
+                else
+                {
+                    myView.DisplayMessage("\nFailed to create account. Please try again.");
+                }
+            }
+            catch (Exception ex)
+            {
+                myView.DisplayMessage($"\nError saving account to database: {ex.Message}");
+            }
         }
 
         private static string GetValidatedInput(string prompt, int minLength, int maxLength)
@@ -63,7 +161,11 @@ namespace ProInjuryLogs
                 myView.DisplayMessage(prompt);
                 string input = myView.GetInput()?.Trim() ?? string.Empty;
 
-                if (input.Length < minLength)
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    myView.DisplayMessage("Error: Input cannot be empty. Try again.\n");
+                }
+                else if (input.Length < minLength)
                 {
                     myView.DisplayMessage($"Error: Input must be at least {minLength} characters long. Try again.\n");
                 }
@@ -130,6 +232,9 @@ namespace ProInjuryLogs
                         DisplayReportsMenu();
                         break;
                     case "3":
+                        CreateAccount();
+                        break;
+                    case "4":
                         exitUser = true;
                         break;
                     default:
@@ -264,7 +369,10 @@ namespace ProInjuryLogs
             if (query != null)
             {
                 DataTable result = storageManager.RunReportsQueries(query);
-                myView.DisplayMessage($"Report {choice} executed. Returned {result.Rows.Count} rows.");
+                myView.DisplayMessage($"\n--- Report {choice} Results ({result.Rows.Count} rows) ---");
+
+                // Prints the table contents directly to the console
+                myView.DisplayDataTable(result);
             }
         }
     }

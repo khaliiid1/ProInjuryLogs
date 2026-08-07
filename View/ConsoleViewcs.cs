@@ -1,73 +1,77 @@
-﻿using ProInjuryLogs.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using ProInjuryLogs.Model;
 
 namespace ProInjuryLogs.View
 {
     public class ConsoleView
     {
-        public void DisplayInjuryMenu()
-        {
-            Console.WriteLine("Injury Menu:");
-            Console.WriteLine("1. View all records in Injury table"); // this is the viewing adding and deleting part of the codes. this is used for display
-            Console.WriteLine("2. Update a injury's name by injury_id");
-            Console.WriteLine("3. Insert a new brand");
-            Console.WriteLine("4. Delete a injury by injury_name");
-            Console.WriteLine("5. Exit");
-            Console.Write("Select an option: ");
-        }
-        public void DisplayBrands(List<Injuries> InjuryList)
-        {
-            foreach (Injuries brandsObject in InjuryList)
-            {
-                Console.WriteLine($"{brandsObject.InjuryID}, {brandsObject.InjuryName}");
-            }
-        }
         public void DisplayMessage(string message)
         {
             Console.WriteLine(message);
         }
+
         public string GetInput()
         {
             return Console.ReadLine();
         }
+
         public int GetIntInput()
         {
-            return int.Parse(Console.ReadLine());
+            if (int.TryParse(Console.ReadLine(), out int result))
+            {
+                return result;
+            }
+            return 0;
         }
 
         internal void DisplayInjuries(List<Injuries> injuryList)
         {
-            throw new NotImplementedException();
+            if (injuryList == null || injuryList.Count == 0)
+            {
+                Console.WriteLine("\nNo injuries found.\n");
+                return;
+            }
+
+            Console.WriteLine("\n--- All Injuries ---");
+            foreach (var injury in injuryList)
+            {
+                Console.WriteLine($"ID: {injury.InjuryID}, Name: {injury.InjuryName}");
+            }
+            Console.WriteLine();
         }
 
-        internal void DisplayinjuryMenu()
+        internal void DisplayInjuryMenu()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("\n--- Injury Menu ---");
+            Console.WriteLine("1. View All Injuries");
+            Console.WriteLine("2. Back");
         }
-    
-    public void AdminMenu()
+
+        public void AdminMenu()
         {
-            Console.WriteLine(" ADMIN MENU ");
+            Console.WriteLine("\n--- ADMIN MENU ---");
             Console.WriteLine("1. View All Injuries");
             Console.WriteLine("2. Update Injury Name");
             Console.WriteLine("3. Insert New Injury");
             Console.WriteLine("4. Delete Injury By Name");
-            Console.WriteLine("5. Back to Role Selection");
-            Console.Write("Enter choice: ");
-        } 
+            Console.WriteLine("5. View Reports");
+            Console.WriteLine("6. Back to Role Selection");
+        }
 
         public void UserMenu()
         {
-            Console.WriteLine(" END USER MENU");
+            Console.WriteLine("\n--- USER MENU ---");
             Console.WriteLine("1. View All Injuries");
-            Console.WriteLine("2. Back to Role Selection");
-            Console.Write("Enter choice: ");
+            Console.WriteLine("2. View Reports");
+            Console.WriteLine("3. Create New Account");
+            Console.WriteLine("4. Back to Role Selection");
         }
-         public void DisplayInjuryByDate(List<Injuries> injuryList)
-            { throw new NotImplementedException(); }
+
+        internal void DisplayDataTable(DataTable result)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
