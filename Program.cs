@@ -16,7 +16,7 @@ namespace ProInjuryLogs
         static void Main(string[] args)
         {
             string connectionString = "Server=(localdb)\\MSSQLLocalDB;Initial Catalog=InjuryLogs;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
- 
+
             storageManager = new StorageManager(connectionString);
             myView = new ConsoleView();
 
@@ -56,10 +56,29 @@ namespace ProInjuryLogs
 
         private static void HandleLogin()
         {
-            string name = GetValidatedInput("Please enter your name:", minLength: 2, maxLength: 20);
+            myView.DisplayMessage("\n=== Account Login ===");
+
+            string username = GetValidatedInput("Please enter your username:", minLength: 3, maxLength: 20);
             string password = GetValidatedInput("Please enter your password:", minLength: 5, maxLength: 15);
 
-            Console.WriteLine($"\nHello, {name}! Please select your role:");
+            // 1. Check if user exists
+            if (!storageManager.UserExists(username))
+            {
+                myView.DisplayMessage("\nError: Username does not exist. Please create an account first.\n");
+                return;
+            }
+
+            // 2. Validate password
+            bool isValidCredentials = storageManager.ValidateUserCredentials(username, password);
+
+            if (!isValidCredentials)
+            {
+                myView.DisplayMessage("\nError: Incorrect password. Access denied.\n");
+                return;
+            }
+
+            // 3. Select Role after successful login
+            myView.DisplayMessage($"\nWelcome back, {username}! Please select your role:");
             myView.DisplayMessage("1. Admin");
             myView.DisplayMessage("2. User");
 
@@ -87,7 +106,6 @@ namespace ProInjuryLogs
         {
             myView.DisplayMessage("\n=== Create New Account ===");
 
-            // Boundary: Username must be between 3 and 20 characters with no spaces
             string username;
             while (true)
             {
@@ -98,7 +116,6 @@ namespace ProInjuryLogs
                     continue;
                 }
 
-                // Boundary: Username uniqueness check
                 if (storageManager.UserExists(username))
                 {
                     myView.DisplayMessage("Error: Username already exists. Please choose a different one.\n");
@@ -108,7 +125,6 @@ namespace ProInjuryLogs
                 break;
             }
 
-            // Boundary: Password length requirement + confirmation match
             string password;
             while (true)
             {
@@ -127,7 +143,6 @@ namespace ProInjuryLogs
                 }
             }
 
-            // Persistence: Save account into database
             try
             {
                 int rows = storageManager.CreateUser(username, password);
@@ -135,7 +150,6 @@ namespace ProInjuryLogs
                 {
                     myView.DisplayMessage($"\nAccount successfully created and saved for '{username}'!");
 
-                    // Option to log in immediately
                     myView.DisplayMessage("\nWould you like to log in now? (1 = Yes, 2 = No)");
                     string choice = myView.GetInput();
                     if (choice == "1")
@@ -370,8 +384,6 @@ namespace ProInjuryLogs
             {
                 DataTable result = storageManager.RunReportsQueries(query);
                 myView.DisplayMessage($"\n--- Report {choice} Results ({result.Rows.Count} rows) ---");
-
-                // Prints the table contents directly to the console
                 myView.DisplayDataTable(result);
             }
         }

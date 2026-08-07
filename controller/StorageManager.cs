@@ -53,10 +53,30 @@ namespace InjuryLogs.controller
                 // Creates table automatically if missing
                 EnsureUsersTableExists(conn);
 
-                string query = "SELECT COUNT(1) FROM dbo.Users WHERE Username = @Username";
+                string query = "SELECT COUNT(1) FROM dbo.Users WHERE dbo.Users.Username = @Username";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Username", username);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+        }
+
+        public bool ValidateUserCredentials(string username, string password)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                EnsureUsersTableExists(conn);
+
+                string query = "SELECT COUNT(1) FROM dbo.Users WHERE dbo.Users.Username = @Username AND dbo.Users.Password = @Password";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Username", username);
+                    cmd.Parameters.AddWithValue("@Password", password);
+
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
                 }
@@ -88,7 +108,7 @@ namespace InjuryLogs.controller
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "SELECT Injury_ID, InjuryType FROM dbo.Injury";
+                string query = "SELECT dbo.Injury.Injury_ID, dbo.Injury.InjuryType FROM dbo.Injury";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     conn.Open();
@@ -112,7 +132,7 @@ namespace InjuryLogs.controller
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE dbo.Injury SET InjuryType = @NewName WHERE Injury_ID = @InjuryID";
+                string query = "UPDATE dbo.Injury SET InjuryType = @NewName WHERE dbo.Injury.Injury_ID = @InjuryID";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@NewName", newName);
@@ -141,7 +161,7 @@ namespace InjuryLogs.controller
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                string query = "DELETE FROM dbo.Injury WHERE InjuryType = @InjuryName";
+                string query = "DELETE FROM dbo.Injury WHERE dbo.Injury.InjuryType = @InjuryName";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@InjuryName", injuryName);
