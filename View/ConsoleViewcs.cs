@@ -71,7 +71,33 @@ namespace ProInjuryLogs.View
 
         internal void DisplayDataTable(DataTable result)
         {
-            throw new NotImplementedException();
+            if (result == null || result.Rows.Count == 0)
+            {
+                Console.WriteLine("\nNo data found to display.\n");
+                return;
+            }
+
+            Console.WriteLine();
+
+            for (int columnIndex = 0; columnIndex < result.Columns.Count; columnIndex++)
+            {
+                Console.Write($"{result.Columns[columnIndex].ColumnName,-20}");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine(new string('-', result.Columns.Count * 20));
+
+            for (int rowIndex = 0; rowIndex < result.Rows.Count; rowIndex++)
+            {
+                for (int columnIndex = 0; columnIndex < result.Columns.Count; columnIndex++)
+                {
+                    string cellValue = result.Rows[rowIndex][columnIndex]?.ToString() ?? string.Empty;
+                    Console.Write($"{cellValue,-20}");
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
         }
     }
 }
